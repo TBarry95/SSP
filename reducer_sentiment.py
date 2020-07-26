@@ -64,12 +64,12 @@ for key_value in csv.reader(sys.stdin):
     rt = int(key_value[3])
     follower = int(key_value[4])
     sentiment_value = float(key_value[6])
-    sentiment_value_cat = int(key_value[7])
+    #sentiment_value_cat = int(key_value[7])
 
     if last_date_key == this_date_key:
         count_per_date += 1
         aggregate_sentiment += sentiment_value
-        aggregate_sentiment_cat += sentiment_value_cat
+        #aggregate_sentiment_cat += sentiment_value_cat
         favs_per_dt += fav  # add favs per date
         rt_per_dt += rt
         sent_list_sort.add(sentiment_value) #1

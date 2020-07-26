@@ -39,7 +39,7 @@ for line in csv.reader(sys.stdin): # line = row of data points, uses csv reader 
         else:
             sentiment_rnd = -1
 
-        print(('%s,%s,%s,%s,%s,%s,%s') % (date, "MEDIA", fav_count, rt_count, followers, login_device, sentiment, sentiment_rnd))
+        print(('%s,%s,%s,%s,%s,%s,%s') % (date, "MEDIA", fav_count, rt_count, followers, login_device, sentiment))
         #print(('%s,%s,%s,%s,%s,%s,%s,%s') % (0, date, "MEDIA", fav_count, rt_count, followers, login_device, sentiment))
         #print(('%s,%s,%s,%s,%s,%s,%s,%s') % (1, date, source, fav_count, rt_count, followers, login_device, sentiment))
     else:
