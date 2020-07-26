@@ -40,12 +40,13 @@ import pandas as pd
 # Get data:
 #########################################################
 
-twitter_pgs2  = ["standardnews", "LBC", "itvnews", "thetimes", "IrishTimes", "ANI", "XHNews", "TIME", "OANN",
-               "BreitbartNews", "Channel4News", "BuzzFeedNews", "NewstalkFM", "NBCNewsBusiness", "CNBCnow",
-               "markets", "YahooFinance", "MarketWatch", "Forbes", "businessinsider", "thehill", "CNNPolitics"]
+twitter_pgs9 = ["ChinaDaily", "CGTNOfficial", "PDChina", "ChinaRealTime", "ReutersChina",
+                "ftchina", "CCTV", "UNICEF", "UN", "UNHumanRights", "WFP", "hrw", "amnestyusa",
+                "amnesty", "globaltimesnews", "AFP", "COVID19Tracking", "latimes", "dallasnews",
+                "BostonGlobe", "chicagotribune", "WashTimes"]
 
-# Remove comments to refresh tweets:
-#tweets_list2 = fns1.get_tweets_list(twitter_pgs2, 120)
-#tweets_df2 = fns1.tweets_to_df1(tweets_list2)
-#tweets_df2.to_csv("./media_tweets2.csv", index= False)
+tweets_list9 = fns1.get_tweets_list(twitter_pgs9, 130)
 
+tweets_df9 = fns1.tweets_to_df1(tweets_list9)
+
+tweets_df9.to_csv("./media_tweets9.csv", index= False)

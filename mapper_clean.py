@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
-# SCRIPT 4: Mapper script used once punctuation is remove from text.
-#           This mapper removes all stop words and reduces text data into essential words.
-#           the output of this mapper feed the following 2 map-reduce jobs as inputs datasets.
-#           No reducer is needed for this mapper.
-
-# DES: Mapper script which reads
+#########################################################
+# DES: Mapper script used once punctuation is remove from text.
+#      This mapper removes all stop words and reduces text data into essential words.
 # BY:  Tiernan Barry, x19141840 - NCI.
+#########################################################
+
+#########################################################
+# Libraries and source scripts:
+#########################################################
 
 from nltk.corpus import stopwords
 import nltk
@@ -15,6 +17,12 @@ import csv
 import sys
 #nltk.download('stopwords')
 #nltk.download('punkt')
+import warnings
+warnings.filterwarnings("ignore")
+
+#########################################################
+# Mapper:
+#########################################################
 
 for line in csv.reader(sys.stdin): # line = row of data points
     if len(line) >= 14:
