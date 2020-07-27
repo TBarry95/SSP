@@ -61,3 +61,4 @@ all_tweets = pd.concat([media_tweets1, media_tweets2, media_tweets3, media_tweet
 #########################################################
 
 all_tweets.to_csv("./combined_tweets.csv", index= False)
+all_tweets.to_csv("./combined_tweets_noheader.csv", index= False, header=False)

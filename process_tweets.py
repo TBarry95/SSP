@@ -9,7 +9,6 @@
 # Ensure in correct directory:
 ########################################################
 import os
-import random
 
 current_dir = os.getcwd()
 print("Current directory: ", current_dir)
@@ -38,6 +37,8 @@ else:
 import pandas as pd
 import re
 import missingno as msno
+import random
+
 
 
 #########################################################
