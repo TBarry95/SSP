@@ -14,7 +14,6 @@
 # BY:  Tiernan Barry, x19141840 - NCI.
 #########################################################
 
-
 #########################################################
 # Libraries and source scripts:
 #########################################################
@@ -37,9 +36,10 @@ count_per_date = 0
 favs_per_dt = 0
 rt_per_dt = 0
 aggregate_sentiment = 0
-aggregate_sentiment_cat = 0 # new variable for categorical sentiment
+aggregate_sentiment_rnd = 0 # new variable for categorical sentiment
 sent_list_sort = SortedList()
 list_sentiment = []
+list_sentiment_rnd = []
 favs_to_follower = []
 rt_to_follower = []
 
@@ -47,14 +47,15 @@ rt_to_follower = []
 # Enables correlation and standard deviation where date < 2 (not meaningful anyway).
 sent_list_sort.add(0)
 list_sentiment.append(0)
+list_sentiment_rnd.append(0)
 favs_to_follower.append(0)
 rt_to_follower.append(0)
 
-# print(('%s,%s,%s,%s,%s,%s,%s') % (date, "MEDIA", fav_count, rt_count, followers, login_device, sentiment))
+# input: date, "MEDIA_TWITTER_ACC", fav_count, rt_count, followers, login_device, sentiment, sentiment_rnd)
 
 # Print column headings for output in CSV format:
-print("DATE, SOURCE, MEAN_SENT, STND_DEV_SENT, MEDIAN_SENT, MIN_SENT, MAX_SENT, FAVS_PER_TWEETS, RT_PER_TWEET, "
-      "CORR_FAV_SENT, CORR_RT_SENT,TWEETS_PER_DATE")
+print("DATE, SOURCE, MEAN_SENT_POLARITY, MEAN_SENT_CATG, STND_DEV_SENT, MEDIAN_SENT, MIN_SENT, MAX_SENT, FAVS_PER_TWEETS, RT_PER_TWEET, "
+      "CORR_FAV_SENT, CORR_RT_SENT, TWEETS_PER_DATE")
 
 # Reduce by date:
 for key_value in csv.reader(sys.stdin):
@@ -64,12 +65,12 @@ for key_value in csv.reader(sys.stdin):
     rt = int(key_value[3])
     follower = int(key_value[4])
     sentiment_value = float(key_value[6])
-    #sentiment_value_cat = int(key_value[7])
+    sentiment_rnd = int(key_value[7])
 
     if last_date_key == this_date_key:
         count_per_date += 1
         aggregate_sentiment += sentiment_value
-        #aggregate_sentiment_cat += sentiment_value_cat
+        aggregate_sentiment_rnd += sentiment_rnd
         favs_per_dt += fav  # add favs per date
         rt_per_dt += rt
         sent_list_sort.add(sentiment_value) #1
@@ -79,10 +80,11 @@ for key_value in csv.reader(sys.stdin):
 
     else:
         if last_date_key:
-            print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
+            print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
                   (last_date_key,
                    source,
-                   aggregate_sentiment / count_per_date,  # avg
+                   aggregate_sentiment / count_per_date,  # avg polarity
+                   aggregate_sentiment_rnd / count_per_date,  # avg catg sent
                    stats.stdev(sent_list_sort),  # stnd dev
                    sent_list_sort[int(len(sent_list_sort) / 2)], # median
                    sent_list_sort[0],  # min
@@ -95,6 +97,7 @@ for key_value in csv.reader(sys.stdin):
 
         # Start the reducer / restart values for each iteration
         aggregate_sentiment = sentiment_value
+        aggregate_sentiment_rnd = sentiment_rnd
         last_date_key = this_date_key
         favs_per_dt = fav
         rt_per_dt = rt
@@ -103,23 +106,27 @@ for key_value in csv.reader(sys.stdin):
         list_sentiment = []
         favs_to_follower = []
         rt_to_follower = []
+        list_sentiment_rnd = []
         # Add 0 to all lists to begin with, makes all lists at least 2 in lengths:
         sent_list_sort.add(0)
         list_sentiment.append(0)
+        list_sentiment_rnd.append(0)
         favs_to_follower.append(0)
         rt_to_follower.append(0)
         # Add actual data:
         sent_list_sort.add(sentiment_value)
         list_sentiment.append(sentiment_value)
+        list_sentiment_rnd.append(sentiment_rnd)
         favs_to_follower.append(fav / follower)
         rt_to_follower.append(rt / follower)
 
 # Output summary stats:
 if last_date_key == this_date_key:
-    print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
+    print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
            (last_date_key,
             source,
-            aggregate_sentiment / count_per_date,  # avg
+            aggregate_sentiment / count_per_date,  # avg polarity
+            aggregate_sentiment_rnd / count_per_date,  # avg catg sent
             stats.stdev(sent_list_sort),  # stnd dev
             sent_list_sort[int(len(sent_list_sort) / 2)],  # median
             sent_list_sort[0],  # min
