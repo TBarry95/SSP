@@ -16,6 +16,9 @@
 import csv
 import sys
 import re
+import spacy
+from spacy.lang.en.stop_words import STOP_WORDS
+nlp = spacy.load("en_core_web_sm")
 #nltk.download('stopwords')
 #nltk.download('punkt')
 #import warnings
@@ -41,8 +44,9 @@ for line in csv.reader(sys.stdin): # line = row of data points
         reply_ind = line[11]
         reply_user_id = line[12]
         len_tweet = line[13]
-        processed_text = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)|(RT)", '', full_text)
+        processed_text = nlp(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)|(RT)", '', full_text))
         processed_hashtag = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)|(RT)|(text)|(indices)|[0-9]+", '', hashtags)
+        filtered_processed_text = [i for i in processed_text if i.is_stop==False]
 
         #stopwords_list = stopwords.words('english')
         #processed_txt_token = word_tokenize(processed_txt)
