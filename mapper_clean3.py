@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 #########################################################
-# DES: Mapper script used once punctuation is remove from text.
-#      This mapper removes all stop words and reduces text data into essential words.
+# DES: Mapper script to remove all punctuation from each tweet
+#      and hashtag. Also removes domain specific jargon such as RT.
 # BY:  Tiernan Barry, x19141840 - NCI.
 #########################################################
 
@@ -10,21 +10,9 @@
 # Libraries and source scripts:
 #########################################################
 
-#import nltk
-#from nltk.corpus import stopwords
-#from nltk.tokenize import word_tokenize
-
-#import pandas as pd
 import csv
 import sys
 import re
-#import spacy
-#from spacy.lang.en.stop_words import STOP_WORDS
-#nlp = spacy.load("en_core_web_sm")
-#nltk.download('stopwords')
-#nltk.download('punkt')
-#import warnings
-#warnings.filterwarnings("ignore")
 
 #########################################################
 # Mapper:
@@ -48,20 +36,8 @@ for line in csv.reader(sys.stdin): # line = row of data points
         len_tweet = line[13]
         processed_text = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)|(RT)", '', full_text)
         processed_hashtag = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)|(RT)|(text)|(indices)|[0-9]+", '', hashtags)
-
-        # spacy:
-        #processed_text_nlp = nlp(processed_text)
-        #filtered_processed_text = [i for i in processed_text_nlp if i.is_stop==False]
-
-        # nltk:
-        #stopwords_list = stopwords.words('english')
-        #processed_txt_token = word_tokenize(processed_txt)
-        #filtered_processed_text = [i for i in processed_txt_token if i not in stopwords_list]
-
-        #filtered_processed_text = ' '.join(filtered_processed_text)
-
         print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
-              (tweet_id, date, source, str_id, login_device,
+              (date, tweet_id, source, str_id, login_device,
                fav_count, rt_count, followers, tweet_count, reply_ind,
                reply_user_id, len_tweet, processed_text, processed_hashtag))
     else:
