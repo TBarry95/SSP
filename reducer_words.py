@@ -48,14 +48,14 @@ for key_value in csv.reader(sys.stdin):
         tweet_count = int(key_value[7])
         reply_ind = key_value[8]
         reply_user_id = key_value[9]
-        len_tweet = key_value[10]
+        len_tweet = int(key_value[10])
         text = key_value[11]
         processed_hashtag = key_value[12]
         covid_count = int(key_value[13])
 
         if last_time_key == this_time_key:
-            favs_per_time += fav  # add favs per date
-            rt_per_time  += rt
+            favs_per_time += int(fav)  # add favs per date
+            rt_per_time  += int(rt)
             count_per_time += 1
             aggregate_covid_count += covid_count
 
