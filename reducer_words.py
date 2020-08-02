@@ -18,67 +18,73 @@ import warnings
 #########################################################
 
 last_time_key = None
-count_per_time = 0
 favs_per_time = 0
 rt_per_time  = 0
-favs_to_follower = []
-rt_to_follower = []
+count_per_time = 0
+aggregate_covid_count = 0
 
-favs_to_follower.append(0)
-rt_to_follower.append(0)
-
-count_covid = 0
+# favs_to_follower = []
+# rt_to_follower = []
+# favs_to_follower.append(0)
+# rt_to_follower.append(0)
 
 # (date_time, tweet_id, source, str_id,
 # fav_count, rt_count, followers, tweet_count, reply_ind,
-# reply_user_id, len_tweet, processed_text, processed_hashtag)
+# reply_user_id, len_tweet, processed_text, processed_hashtag,
+#  total_count)
 
 # Print column headings for output in CSV format:
-print("DATE_TIME, FAVS_COUNT, RT_COUNT, TWEET_COUNT")
+print("DATE_TIME, FAVS_COUNT, RT_COUNT, TWEET_COUNT, COVID_COUNT")
 
 # Reduce by date and hour of day:
 for key_value in csv.reader(sys.stdin):
-    this_time_key = key_value[0]
-    source = key_value[2]
-    fav = int(key_value[4])
-    rt = int(key_value[5])
-    follower = int(key_value[6])
-    text = key_value[11]
+    try:
+        this_time_key = key_value[0]
+        tweet_id = key_value[1]
+        source = key_value[2]
+        fav = int(key_value[4])
+        rt = int(key_value[5])
+        follower = int(key_value[6])
+        tweet_count = int(key_value[7])
+        reply_ind = key_value[8]
+        reply_user_id = key_value[9]
+        len_tweet = key_value[10]
+        text = key_value[11]
+        processed_hashtag = key_value[12]
+        covid_count = int(key_value[13])
 
-    if last_time_key == this_time_key:
-        count_per_time += 1
-        favs_per_time += fav  # add favs per date
-        rt_per_time  += rt
+        if last_time_key == this_time_key:
+            favs_per_time += fav  # add favs per date
+            rt_per_time  += rt
+            count_per_time += 1
+            aggregate_covid_count += covid_count
 
-    else:
-        if last_time_key:
-            print(('%s,%s,%s,%s') %
-                  (last_time_key,
-                   favs_per_time / count_per_time,
-                   rt_per_time / count_per_time,  # rt:number tweets
-                   count_per_time
-                   ))
+        else:
+            if last_time_key:
+                print(('%s,%s,%s,%s,%s') %
+                      (last_time_key,
+                       favs_per_time,
+                       rt_per_time,
+                       count_per_time,
+                       aggregate_covid_count
+                       ))
 
-        # Start the reducer / restart values for each iteration
-        last_time_key = this_time_key
-        favs_per_time = fav
-        rt_per_time = rt
-        count_per_time = 1
-        favs_to_follower = []
-        rt_to_follower = []
-        favs_to_follower.append(0)
-        rt_to_follower.append(0)
+            # Start the reducer / restart values for each iteration
+            last_time_key = this_time_key
+            favs_per_time = fav
+            rt_per_time = rt
+            count_per_time = 1
+            aggregate_covid_count = covid_count
 
-        # Add actual data:
-        favs_to_follower.append(fav / follower)
-        rt_to_follower.append(rt / follower)
-
+    except:
+        continue
 
 # Output summary stats:
 if last_time_key == this_time_key:
-    print(('%s,%s,%s,%s') %
-          (last_time_key,
-           favs_per_time / count_per_time,
-           rt_per_time / count_per_time,  # rt:number tweets
-           count_per_time
-           ))
+    print(('%s,%s,%s,%s,%s') %
+        (last_time_key,
+        favs_per_time,
+        rt_per_time,
+        count_per_time,
+        aggregate_covid_count
+        ))

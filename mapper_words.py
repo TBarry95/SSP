@@ -17,11 +17,10 @@ import re
 # Mapper:
 #########################################################
 
+# Input cols:
 # (date_time, tweet_id, source, str_id,
 # fav_count, rt_count, followers, tweet_count, reply_ind,
 # reply_user_id, len_tweet, processed_text, processed_hashtag))
-
-
 
 for line in csv.reader(sys.stdin): # line = row of data points
     if len(line) >= 13:
