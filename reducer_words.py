@@ -1,16 +1,7 @@
 #!/usr/bin/python
 
 #########################################################
-# DES: Reducer script to find insights regarding sentiment analysis scores for each date.
-#      On a follower weighted basis, as well as a tweets per day basis, finds insights
-#      such as average sentiment scores per date, and correlations between sentiment scores and favourites/RTs.
-#      Please note:
-#      Because standard deviation require at least 2 values per date, and because there are some dates with only 1 tweet,
-#      this reducer adds a 0 to all lists to fulfill these requirements. The assumption is that dates with only 2 tweets these
-#      values are meaningless anyway, while others they will not impact.
-#      Similarily, when only 1 tweet is couneted per date, Scipy prints out a warning when calculating correlation coefficient.
-#      This is why warnings are disabled, as the return is 'nan' for such dates.
-#      Results are manually copied from HDFS into the Ubuntu EC2 machine using 'hdfs dfs -copyToLocal'.
+# DES:
 # BY:  Tiernan Barry, x19141840 - NCI.
 #########################################################
 
@@ -22,21 +13,72 @@ import sys
 import csv
 import warnings
 
-
 #########################################################
 # Reducer:
 #########################################################
 
-last_date_key = None
-count_per_date = 0
-favs_per_dt = 0
-rt_per_dt = 0
-aggregate_sentiment = 0
-aggregate_sentiment_rnd = 0 # new variable for categorical sentiment
-sent_list_sort = SortedList()
-list_sentiment = []
-list_sentiment_rnd = []
+last_time_key = None
+count_per_time = 0
+favs_per_time = 0
+rt_per_time  = 0
 favs_to_follower = []
 rt_to_follower = []
 
+favs_to_follower.append(0)
+rt_to_follower.append(0)
 
+count_covid = 0
+
+# (date_time, tweet_id, source, str_id,
+# fav_count, rt_count, followers, tweet_count, reply_ind,
+# reply_user_id, len_tweet, processed_text, processed_hashtag)
+
+# Print column headings for output in CSV format:
+print("DATE_TIME, FAVS_COUNT, RT_COUNT, TWEET_COUNT")
+
+# Reduce by date and hour of day:
+for key_value in csv.reader(sys.stdin):
+    this_time_key = key_value[0]
+    source = key_value[2]
+    fav = int(key_value[4])
+    rt = int(key_value[5])
+    follower = int(key_value[6])
+    text = key_value[11]
+
+    if last_time_key == this_time_key:
+        count_per_time += 1
+        favs_per_time += fav  # add favs per date
+        rt_per_time  += rt
+
+    else:
+        if last_time_key:
+            print(('%s,%s,%s,%s') %
+                  (last_time_key,
+                   favs_per_time / count_per_time,
+                   rt_per_time / count_per_time,  # rt:number tweets
+                   count_per_time
+                   ))
+
+        # Start the reducer / restart values for each iteration
+        last_time_key = this_time_key
+        favs_per_time = fav
+        rt_per_time = rt
+        count_per_time = 1
+        favs_to_follower = []
+        rt_to_follower = []
+        favs_to_follower.append(0)
+        rt_to_follower.append(0)
+
+        # Add actual data:
+        favs_to_follower.append(fav / follower)
+        rt_to_follower.append(rt / follower)
+
+
+# Output summary stats:
+if last_time_key == this_time_key:
+    print(('%s,%s,%s,%s') %
+          (last_time_key,
+           favs_per_time / count_per_time,
+           rt_per_time / count_per_time,  # rt:number tweets
+           count_per_time
+           ))

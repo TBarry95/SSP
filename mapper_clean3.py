@@ -21,7 +21,7 @@ import re
 for line in csv.reader(sys.stdin): # line = row of data points
     if len(line) >= 13:
         tweet_id = line[0] # key = tweet_id
-        date = line[1]
+        date_time = line[1]
         source = line[2]
         str_id = line[3]
         full_text = line[4].lower()
@@ -36,8 +36,8 @@ for line in csv.reader(sys.stdin): # line = row of data points
         len_tweet = line[13]
         processed_text = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)|(RT)", '', full_text)
         processed_hashtag = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)|(RT)|(text)|(indices)|[0-9]+", '', hashtags)
-        print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
-              (date, tweet_id, source, str_id, login_device,
+        print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
+              (date_time, tweet_id, source, str_id,
                fav_count, rt_count, followers, tweet_count, reply_ind,
                reply_user_id, len_tweet, processed_text, processed_hashtag))
     else:
