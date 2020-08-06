@@ -25,6 +25,13 @@ HDUSER_PATH='/home/hadoop/SSP'
 chmod +x $HDUSER_PATH/mapper_clean3.py
 chmod +x $HDUSER_PATH/mapper_words.py
 chmod +x $HDUSER_PATH/reducer_words.py
+chmod +x $HDUSER_PATH/get_tweets/combine_tweets.py
+
+#############################################
+# Run python job to create raw dataset (combines files)
+#############################################
+
+python3 $HDUSER_PATH/get_tweets/combine_tweets.py
 
 #############################################
 # Create folder structure on HDFS and copy input files from local file system
@@ -52,7 +59,7 @@ hdfs dfs -rmdir $HDFS_PATH/output_job2
 #############################################
 
 echo "Launching Hadoop Job 1: Preprocess and clean Twitter data"
-mapred streaming \
+hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -D mapred.reduce.tasks=0 \
 -file $HDUSER_PATH/mapper_clean3.py \
 -mapper 'python3 mapper_clean3.py' \
@@ -64,7 +71,7 @@ mapred streaming \
 #############################################
 
 echo "Launching Hadoop Job 2: Aggregate the occurence of COVID in tweets"
-mapred streaming \
+hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -D mapred.reduce.tasks=1 \
 -file $HDUSER_PATH/mapper_words.py $HDUSER_PATH/reducer_words.py \
 -mapper 'python3 mapper_words.py' \
@@ -78,6 +85,9 @@ mapred streaming \
 #############################################
 
 echo "Copying final output from HDFS to local folder"  
+
+mkdir $HDUSER_PATH/output
+
 rm $HDUSER_PATH/output/job_1/*
 rmdir $HDUSER_PATH/output/job_1
 mkdir $HDUSER_PATH/output/job_1
