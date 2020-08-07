@@ -11,6 +11,7 @@ from pyspark.ml.regression import LinearRegression
 from pyspark.ml.feature import VectorAssembler
 from pyspark.sql import SparkSession
 import re
+from pyspark.ml.evaluation import RegressionEvaluator
 
 ###########################################
 # Get data
@@ -65,11 +66,25 @@ lr = LinearRegression(featuresCol = "IND_VARS",
 			elasticNetParam=0.8)
 
 lr_model = lr.fit(df_train)
+
+# summary
 print("Predictors: " + "FAVS_COUNT," + "RT_COUNT," + "TWEET_COUNT")
 print("Coefficients: " + str(lr_model.coefficients))
 print("Intercept: " + str(lr_model.intercept))
+train_summary = lr_model.summary
+print("RMSE: %f" % train_summary.rootMeanSquaredError)
+print("r2: %f" % train_summary.r2)
 
+lr_predictions = lr_model.transform(df_test)
+lr_predictions.select("prediction","COVID_COUNT","IND_VARS").show(5)
 
+lr_evaluator = RegressionEvaluator(predictionCol="prediction", labelCol="COVID_COUNT", metricName="r2")
+print("R Squared (R2) on test data = %g" % lr_evaluator.evaluate(lr_predictions))
 
+# test
+test_result = lr_model.evaluate(df_test)
+print("Root Mean Squared Error (RMSE) on test data = %g" % test_result.rootMeanSquaredError)
 
+predictions = lr_model.transform(df_test)
+predictions.select("prediction","COVID_COUNT","IND_VARS").show()
 
