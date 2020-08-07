@@ -78,6 +78,12 @@ hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -reducer 'python3 reducer_words.py' \
 -input $HDFS_PATH/output_job1/part-00000 \
 -input $HDFS_PATH/output_job1/part-00001 \
+-input $HDFS_PATH/output_job1/part-00002 \
+-input $HDFS_PATH/output_job1/part-00003 \
+-input $HDFS_PATH/output_job1/part-00004 \
+-input $HDFS_PATH/output_job1/part-00005 \
+-input $HDFS_PATH/output_job1/part-00006 \
+-input $HDFS_PATH/output_job1/part-00007 \
 -output $HDFS_PATH/output_job2
 
 #############################################
