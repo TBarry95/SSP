@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #########################################################
 # DES: Mapper script to remove all punctuation from each tweet
@@ -13,6 +13,7 @@
 import csv
 import sys
 import re
+import pandas as pd
 
 #########################################################
 # Mapper:

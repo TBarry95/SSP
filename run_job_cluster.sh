@@ -23,6 +23,7 @@ HDUSER_PATH='/home/hadoop/SSP'
 
 # make executable
 chmod +x $HDUSER_PATH/mapper_clean3.py
+chmod +x $HDUSER_PATH/mapper_clean2.py
 chmod +x $HDUSER_PATH/mapper_words.py
 chmod +x $HDUSER_PATH/reducer_words.py
 chmod +x $HDUSER_PATH/get_tweets/combine_tweets.py
@@ -61,8 +62,8 @@ hdfs dfs -rmdir $HDFS_PATH/output_job2
 echo "Launching Hadoop Job 1: Preprocess and clean Twitter data"
 hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -D mapred.reduce.tasks=0 \
--file $HDUSER_PATH/mapper_clean3.py \
--mapper 'python3 mapper_clean3.py' \
+-file $HDUSER_PATH/mapper_clean2.py \
+-mapper 'python3 mapper_clean2.py' \
 -input $HDFS_PATH/input/combined_tweets_noheader.csv \
 -output $HDFS_PATH/output_job1
 
@@ -70,21 +71,21 @@ hadoop jar /lib/hadoop/hadoop-streaming.jar \
 # Run hadoop job 2:
 #############################################
 
-echo "Launching Hadoop Job 2: Aggregate the occurence of COVID in tweets"
-hadoop jar /lib/hadoop/hadoop-streaming.jar \
--D mapred.reduce.tasks=1 \
--file $HDUSER_PATH/mapper_words.py $HDUSER_PATH/reducer_words.py \
--mapper 'python3 mapper_words.py' \
--reducer 'python3 reducer_words.py' \
--input $HDFS_PATH/output_job1/part-00000 \
--input $HDFS_PATH/output_job1/part-00001 \
--input $HDFS_PATH/output_job1/part-00002 \
--input $HDFS_PATH/output_job1/part-00003 \
--input $HDFS_PATH/output_job1/part-00004 \
--input $HDFS_PATH/output_job1/part-00005 \
--input $HDFS_PATH/output_job1/part-00006 \
--input $HDFS_PATH/output_job1/part-00007 \
--output $HDFS_PATH/output_job2
+#echo "Launching Hadoop Job 2: Aggregate the occurence of COVID in tweets"
+#hadoop jar /lib/hadoop/hadoop-streaming.jar \
+#-D mapred.reduce.tasks=1 \
+#-file $HDUSER_PATH/mapper_words.py $HDUSER_PATH/reducer_words.py \
+#-mapper 'python3 mapper_words.py' \
+#-reducer 'python3 reducer_words.py' \
+#-input $HDFS_PATH/output_job1/part-00000 \
+#-input $HDFS_PATH/output_job1/part-00001 \
+#-input $HDFS_PATH/output_job1/part-00002 \
+#-input $HDFS_PATH/output_job1/part-00003 \
+#-input $HDFS_PATH/output_job1/part-00004 \
+#-input $HDFS_PATH/output_job1/part-00005 \
+#-input $HDFS_PATH/output_job1/part-00006 \
+#-input $HDFS_PATH/output_job1/part-00007 \
+#-output $HDFS_PATH/output_job2
 
 #############################################
 # Copy output files to local file system

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #########################################################
 # DES: Mapper script used once punctuation is remove from text.
@@ -10,9 +10,11 @@
 # Libraries and source scripts:
 #########################################################
 
-#import nltk
-#from nltk.corpus import stopwords
-#from nltk.tokenize import word_tokenize
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+nltk.download('stopwords')
+nltk.download('punkt')
 
 #import pandas as pd
 import csv
@@ -54,15 +56,15 @@ for line in csv.reader(sys.stdin): # line = row of data points
         #filtered_processed_text = [i for i in processed_text_nlp if i.is_stop==False]
 
         # nltk:
-        #stopwords_list = stopwords.words('english')
-        #processed_txt_token = word_tokenize(processed_txt)
-        #filtered_processed_text = [i for i in processed_txt_token if i not in stopwords_list]
+        stopwords_list = stopwords.words('english')
+        processed_txt_token = word_tokenize(processed_text)
+        filtered_processed_text = [i for i in processed_txt_token if i not in stopwords_list]
+        filtered_processed_text = ' '.join(filtered_processed_text)
 
-        #filtered_processed_text = ' '.join(filtered_processed_text)
-
-        print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
+        print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
               (tweet_id, date, source, str_id, login_device,
                fav_count, rt_count, followers, tweet_count, reply_ind,
-               reply_user_id, len_tweet, processed_text, processed_hashtag))
+               reply_user_id, len_tweet, processed_text, processed_hashtag,
+		filtered_processed_text))
     else:
         continue
