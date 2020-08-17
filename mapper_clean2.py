@@ -53,13 +53,13 @@ for line in csv.reader(sys.stdin): # line = row of data points
 
         # spacy:
         processed_text_nlp = nlp(processed_text)
-        filtered_processed_text = [i for i in processed_text_nlp if i.is_stop==False]
+        filtered_processed_text = [str(i) for i in processed_text_nlp if i.is_stop == False]
 
         # nltk:
         #stopwords_list = stopwords.words('english')
         #processed_txt_token = word_tokenize(processed_text)
         #filtered_processed_text = [i for i in processed_txt_token if i not in stopwords_list]
-        filtered_processed_text = str(' '.join(filtered_processed_text))
+        filtered_processed_text = ' '.join([i for i in filtered_processed_text])
 
         print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
               (tweet_id, date, source, str_id, login_device,
