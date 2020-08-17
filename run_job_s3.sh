@@ -21,13 +21,13 @@ chmod +x $HDUSER_PATH/reducer_sentiment.py
 # Run hadoop job 1:
 #############################################
 
-#echo "Launching Hadoop Job 1: Preprocess and clean Twitter data"
-#hadoop jar /lib/hadoop/hadoop-streaming.jar \
-#-D mapred.reduce.tasks=0 \
-#-file $HDUSER_PATH/mapper_clean2.py \
-#-mapper 'python3 mapper_clean2.py' \
-#-input $S3_PATH/input/combined_tweets_noheader.csv \
-#-output $S3_PATH/output/output_job1
+echo "Launching Hadoop Job 1: Preprocess and clean Twitter data"
+hadoop jar /lib/hadoop/hadoop-streaming.jar \
+-D mapred.reduce.tasks=0 \
+-file $HDUSER_PATH/mapper_clean2.py \
+-mapper 'python3 mapper_clean2.py' \
+-input $S3_PATH/input/combined_tweets_noheader.csv \
+-output $S3_PATH/output/output_job1
 
 #############################################
 # Run hadoop job 2:
@@ -48,4 +48,3 @@ hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -input $S3_PATH/output/output_job1/part-00006 \
 -input $S3_PATH/output/output_job1/part-00007 \
 -output $S3_PATH/output/output_job2
-

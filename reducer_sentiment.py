@@ -24,8 +24,8 @@ from sortedcontainers import SortedList
 import statistics as stats
 import csv
 from scipy.stats import pearsonr
-#import warnings
-#warnings.filterwarnings("ignore")
+import warnings
+warnings.filterwarnings("ignore")
 
 #########################################################
 # Reducer:
@@ -60,7 +60,7 @@ print("DATE_TIME, SOURCE, MEAN_SENT_POLARITY, MEAN_SENT_CATG, STND_DEV_SENT, MED
 # Reduce by date:
 for key_value in csv.reader(sys.stdin):
     this_date_key = key_value[0]
-    source = key_value[1]
+    source = str(key_value[1])
     fav = int(key_value[2])
     rt = int(key_value[3])
     follower = int(key_value[4])
