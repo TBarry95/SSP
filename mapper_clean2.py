@@ -10,21 +10,21 @@
 # Libraries and source scripts:
 #########################################################
 
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-nltk.download('stopwords')
-nltk.download('punkt')
+#import nltk
+#nltk.download('stopwords')
+#nltk.download('punkt')
+#from nltk.corpus import stopwords
+#from nltk.tokenize import word_tokenize
 
-#import pandas as pd
+import pandas as pd
 import csv
 import sys
 import re
-#import spacy
-#from spacy.lang.en.stop_words import STOP_WORDS
-#nlp = spacy.load("en_core_web_sm")
-#nltk.download('stopwords')
-#nltk.download('punkt')
+
+import spacy
+from spacy.lang.en.stop_words import STOP_WORDS
+nlp = spacy.load("en_core_web_sm")
+
 #import warnings
 #warnings.filterwarnings("ignore")
 
@@ -52,14 +52,14 @@ for line in csv.reader(sys.stdin): # line = row of data points
         processed_hashtag = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)|(RT)|(text)|(indices)|[0-9]+", '', hashtags)
 
         # spacy:
-        #processed_text_nlp = nlp(processed_text)
-        #filtered_processed_text = [i for i in processed_text_nlp if i.is_stop==False]
+        processed_text_nlp = nlp(processed_text)
+        filtered_processed_text = [i for i in processed_text_nlp if i.is_stop==False]
 
         # nltk:
-        stopwords_list = stopwords.words('english')
-        processed_txt_token = word_tokenize(processed_text)
-        filtered_processed_text = [i for i in processed_txt_token if i not in stopwords_list]
-        filtered_processed_text = ' '.join(filtered_processed_text)
+        #stopwords_list = stopwords.words('english')
+        #processed_txt_token = word_tokenize(processed_text)
+        #filtered_processed_text = [i for i in processed_txt_token if i not in stopwords_list]
+        filtered_processed_text = str(' '.join(filtered_processed_text))
 
         print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
               (tweet_id, date, source, str_id, login_device,
