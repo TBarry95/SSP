@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #########################################################
 # DES: Reducer script to find insights regarding sentiment analysis scores for each date.
@@ -24,8 +24,8 @@ from sortedcontainers import SortedList
 import statistics as stats
 import csv
 from scipy.stats import pearsonr
-import warnings
-warnings.filterwarnings("ignore")
+#import warnings
+#warnings.filterwarnings("ignore")
 
 #########################################################
 # Reducer:
@@ -54,7 +54,7 @@ rt_to_follower.append(0)
 # input: date, "MEDIA_TWITTER_ACC", fav_count, rt_count, followers, login_device, sentiment, sentiment_rnd)
 
 # Print column headings for output in CSV format:
-print("DATE, SOURCE, MEAN_SENT_POLARITY, MEAN_SENT_CATG, STND_DEV_SENT, MEDIAN_SENT, MIN_SENT, MAX_SENT, FAVS_PER_TWEETS, RT_PER_TWEET, "
+print("DATE_TIME, SOURCE, MEAN_SENT_POLARITY, MEAN_SENT_CATG, STND_DEV_SENT, MEDIAN_SENT, MIN_SENT, MAX_SENT, FAVS_PER_TWEETS, RT_PER_TWEET, "
       "CORR_FAV_SENT, CORR_RT_SENT, TWEETS_PER_DATE")
 
 # Reduce by date:

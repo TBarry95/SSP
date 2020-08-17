@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #########################################################
 # DES: Mapper script applies a sentiment score for each tweet.
@@ -22,17 +22,18 @@ import csv
 #########################################################
 
 # (tweet_id 0, date 1, source 2, str_id 3, login_device 4, fav_count 5, rt_count 6, followers 7,
-# tweet_count 8, reply_ind 9, reply_user_id 10, len_tweet 11, processed_text 12, processed_hashtag 13)
+# tweet_count 8, reply_ind 9, reply_user_id 10, len_tweet 11, processed_text 12, processed_hashtag 13,
+# filtered_processed_text 14)
 
 for line in csv.reader(sys.stdin): # line = row of data points, uses csv reader to split data.
-    if len(line) >= 12:
+    if len(line) >= 13:
         date = line[1]
         source = line[2]
         login_device = line[4]
         fav_count = line[5]
         rt_count = line[6]
         followers = line[7]
-        processed_txt = line[12]
+        processed_txt = line[14]
         blob = TextBlob(processed_txt)
         sentiment = blob.sentiment.polarity
         if sentiment >= 0:

@@ -65,6 +65,6 @@ for line in csv.reader(sys.stdin): # line = row of data points
               (tweet_id, date, source, str_id, login_device,
                fav_count, rt_count, followers, tweet_count, reply_ind,
                reply_user_id, len_tweet, processed_text, processed_hashtag,
-		filtered_processed_text))
+		        filtered_processed_text))
     else:
         continue
