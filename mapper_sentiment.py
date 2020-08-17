@@ -14,7 +14,7 @@
 import sys
 from textblob import TextBlob
 import csv
-#import warnings
+import warnings
 #warnings.filterwarnings("ignore")
 
 #########################################################
@@ -26,20 +26,20 @@ import csv
 # filtered_processed_text 14)
 
 for line in csv.reader(sys.stdin): # line = row of data points, uses csv reader to split data.
-    if len(line) >= 13:
+    if len(line) == 15:
         date = line[1]
-        source = line[2]
-        login_device = line[4]
-        fav_count = line[5]
-        rt_count = line[6]
-        followers = line[7]
-        processed_txt = line[14]
+        source = str(line[2])
+        login_device = str(line[4])
+        fav_count = int(line[5])
+        rt_count = int(line[6])
+        followers = int(line[7])
+        processed_txt = str(line[14])
         blob = TextBlob(processed_txt)
-        sentiment = blob.sentiment.polarity
+        sentiment = float(blob.sentiment.polarity)
         if sentiment >= 0:
-            sentiment_rnd = 1
+            sentiment_rnd = int(1)
         else:
-            sentiment_rnd = -1
+            sentiment_rnd = int(-1)
 
         print(('%s,%s,%s,%s,%s,%s,%s,%s') %
               (date, "MEDIA_TWITTER_ACC", fav_count, rt_count, followers, login_device, sentiment, sentiment_rnd))
