@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 
 #############################################
 # Define working paths
@@ -6,6 +6,7 @@
 
 HDFS_PATH='/ssp_project'
 HDUSER_PATH='/home/hadoop/SSP'
+S3_PATH='s3://tbarry-ssp-project'
 
 #############################################
 # set permissions of scripts
@@ -17,10 +18,11 @@ chmod +x $HDUSER_PATH/mapper_sentiment.py
 chmod +x $HDUSER_PATH/reducer_sentiment.py
 
 #############################################
-# Run python job to create raw dataset (combines files)
+# Run python job to create raw dataset (combines files) and send to S3
 #############################################
 
 python3 $HDUSER_PATH/get_tweets/combine_tweets.py
+aws s3 cp $HDUSER_PATH/get_tweets/combined_tweets_noheader.csv $S3_PATH/input/
 
 #############################################
 # Create folder structure on HDFS and copy input files from local file system
@@ -91,3 +93,9 @@ mkdir $HDUSER_PATH/output/job_2
 hdfs dfs -copyToLocal $HDFS_PATH/output_job1/* $HDUSER_PATH/output/job_1
 hdfs dfs -copyToLocal $HDFS_PATH/output_job2/* $HDUSER_PATH/output/job_2
 
+#############################################
+# Copy output files to S3
+#############################################
+
+aws s3 cp $HDUSER_PATH/output/job_1 $S3_PATH/output/job_1/ --recursive
+aws s3 cp $HDUSER_PATH/output/job_2 $S3_PATH/output/job_2/ --recursive
