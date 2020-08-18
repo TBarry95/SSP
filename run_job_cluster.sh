@@ -21,6 +21,7 @@ chmod +x $HDUSER_PATH/reducer_sentiment.py
 # Run python job to create raw dataset (combines files) and send to S3
 #############################################
 
+echo "Combining raw dataset and sending to S3 for storage" 
 python3 $HDUSER_PATH/get_tweets/combine_tweets.py
 aws s3 cp $HDUSER_PATH/get_tweets/combined_tweets_noheader.csv $S3_PATH/input/
 
@@ -81,7 +82,7 @@ hadoop jar /lib/hadoop/hadoop-streaming.jar \
 # Copy output files to local file system
 #############################################
 
-echo "Copying final output from HDFS to local folder"  
+echo "Copying final output from HDFS to local folder"
 mkdir $HDUSER_PATH/output
 rm $HDUSER_PATH/output/job_1/*
 rmdir $HDUSER_PATH/output/job_1
@@ -96,6 +97,6 @@ hdfs dfs -copyToLocal $HDFS_PATH/output_job2/* $HDUSER_PATH/output/job_2
 #############################################
 # Copy output files to S3
 #############################################
-
+echo "Copying final output to S3"
 aws s3 cp $HDUSER_PATH/output/job_1 $S3_PATH/output/job_1/ --recursive
 aws s3 cp $HDUSER_PATH/output/job_2 $S3_PATH/output/job_2/ --recursive
