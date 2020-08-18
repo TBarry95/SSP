@@ -43,6 +43,9 @@ list_sentiment_rnd = []
 favs_to_follower = []
 rt_to_follower = []
 
+# covid count:
+aggregate_covid_count = 0
+
 # Add 0 to all lists to begin with, makes all lists at least 2 in lengths.
 # Enables correlation and standard deviation where date < 2 (not meaningful anyway).
 sent_list_sort.add(0)
@@ -51,11 +54,11 @@ list_sentiment_rnd.append(0)
 favs_to_follower.append(0)
 rt_to_follower.append(0)
 
-# input: date, "MEDIA_TWITTER_ACC", fav_count, rt_count, followers, login_device, sentiment, sentiment_rnd)
+# input: (date, "MEDIA_TWITTER_ACC", fav_count, rt_count, followers, login_device, sentiment, sentiment_rnd, covid_count))
 
 # Print column headings for output in CSV format:
 print("DATE_TIME, SOURCE, MEAN_SENT_POLARITY, MEAN_SENT_CATG, STND_DEV_SENT, MEDIAN_SENT, MIN_SENT, MAX_SENT, FAVS_PER_TWEETS, RT_PER_TWEET, "
-      "CORR_FAV_SENT, CORR_RT_SENT, TWEETS_PER_DATE")
+      "CORR_FAV_SENT, CORR_RT_SENT, TWEETS_PER_DATE, COVID_COUNT")
 
 # Reduce by date:
 for key_value in csv.reader(sys.stdin):
@@ -66,6 +69,7 @@ for key_value in csv.reader(sys.stdin):
     follower = int(key_value[4])
     sentiment_value = float(key_value[6])
     sentiment_rnd = int(key_value[7])
+    covid = int(key_value[8])
 
     if last_date_key == this_date_key:
         count_per_date += 1
@@ -73,6 +77,7 @@ for key_value in csv.reader(sys.stdin):
         aggregate_sentiment_rnd += sentiment_rnd
         favs_per_dt += fav  # add favs per date
         rt_per_dt += rt
+        aggregate_covid_count += covid
         sent_list_sort.add(sentiment_value) #1
         list_sentiment.append(sentiment_value)
         favs_to_follower.append(fav/follower)
@@ -80,7 +85,7 @@ for key_value in csv.reader(sys.stdin):
 
     else:
         if last_date_key:
-            print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
+            print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
                   (last_date_key,
                    source,
                    aggregate_sentiment / count_per_date,  # avg polarity
@@ -93,7 +98,8 @@ for key_value in csv.reader(sys.stdin):
                    rt_per_dt / count_per_date,  # rt:number tweets
                    pearsonr(list_sentiment, favs_to_follower)[0],
                    pearsonr(list_sentiment, rt_to_follower)[0],
-                   count_per_date))  # 2
+                   count_per_date,
+                   aggregate_covid_count))  # 2
 
         # Start the reducer / restart values for each iteration
         aggregate_sentiment = sentiment_value
@@ -102,6 +108,7 @@ for key_value in csv.reader(sys.stdin):
         favs_per_dt = fav
         rt_per_dt = rt
         count_per_date = 1
+        aggregate_covid_count = covid
         sent_list_sort = SortedList()
         list_sentiment = []
         favs_to_follower = []
@@ -122,7 +129,7 @@ for key_value in csv.reader(sys.stdin):
 
 # Output summary stats:
 if last_date_key == this_date_key:
-    print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
+    print(('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s') %
            (last_date_key,
             source,
             aggregate_sentiment / count_per_date,  # avg polarity
@@ -135,4 +142,5 @@ if last_date_key == this_date_key:
             rt_per_dt / count_per_date,  # rt:number tweets
             pearsonr(list_sentiment, favs_to_follower)[0],
             pearsonr(list_sentiment, rt_to_follower)[0],
-            count_per_date))
+            count_per_date,
+            aggregate_covid_count))
