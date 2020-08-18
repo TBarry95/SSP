@@ -58,7 +58,7 @@ rt_to_follower.append(0)
 
 # Print column headings for output in CSV format:
 print("DATE_TIME, SOURCE, MEAN_SENT_POLARITY, MEAN_SENT_CATG, STND_DEV_SENT, MEDIAN_SENT, MIN_SENT, MAX_SENT, FAVS_PER_TWEETS, RT_PER_TWEET, "
-      "CORR_FAV_SENT, CORR_RT_SENT, TWEETS_PER_DATE, COVID_COUNT")
+      "CORR_FAV_SENT, CORR_RT_SENT, TWEETS_PER_HOUR, COVID_COUNT")
 
 # Reduce by date:
 for key_value in csv.reader(sys.stdin):
