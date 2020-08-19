@@ -28,3 +28,4 @@ time = [i for i in range(1, nb_iters)]
 accuracy = [sum(correctness_dist[:i])/len(correctness_dist[:i]) for i in range(1, nb_iters)]
 
 plt.plot(time, accuracy)
+plt.show()
