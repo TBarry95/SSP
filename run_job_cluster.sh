@@ -93,6 +93,7 @@ mkdir $HDUSER_PATH/output/job_2
 
 hdfs dfs -copyToLocal $HDFS_PATH/output_job1/* $HDUSER_PATH/output/job_1
 hdfs dfs -copyToLocal $HDFS_PATH/output_job2/* $HDUSER_PATH/output/job_2
+mv $HDUSER_PATH/output/job_2/part-00000 $HDUSER_PATH/output/job_2/part-00000.csv
 
 #############################################
 # Copy output files to S3
