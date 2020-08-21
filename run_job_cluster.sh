@@ -40,14 +40,16 @@ hdfs dfs -copyFromLocal $HDUSER_PATH/get_tweets/combined_tweets_noheader.csv $HD
 # Delete output if exists: If  the output folder already exists, hadoop fails
 #############################################
 
-echo "Initialising local folders for storing Map Reduce outputs"
+echo "Initialising folders for storing Map Reduce outputs"
 hdfs dfs -rm $HDFS_PATH/output_job1/*
 hdfs dfs -rmdir $HDFS_PATH/output_job1
 hdfs dfs -rm $HDFS_PATH/output_job2/*
 hdfs dfs -rmdir $HDFS_PATH/output_job2
+hdfs dfs -rm $HDFS_PATH/output_job3/*
+hdfs dfs -rmdir $HDFS_PATH/output_job3
 
 #############################################
-# Run hadoop job 1:
+# Run hadoop job 1: Clean data
 #############################################
 
 echo "Launching Hadoop Job 1: Preprocess and clean Twitter data"
@@ -59,7 +61,7 @@ hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -output $HDFS_PATH/output_job1
 
 #############################################
-# Run hadoop job 2:
+# Run hadoop job 2: run sentiment analysis and aggregate by date
 #############################################
 
 echo "Launching Hadoop Job 2: Run sentiment analysis on tweets by hour"
@@ -79,6 +81,19 @@ hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -output $HDFS_PATH/output_job2
 
 #############################################
+# Run hadoop job 3: run moving averages analysis on TS sentiments
+#############################################
+
+echo "Launching Hadoop Job 3: Run moving averages analysis on aggregated tweet sentiment"
+hadoop jar /lib/hadoop/hadoop-streaming.jar \
+-D mapred.reduce.tasks=1 \
+-file $HDUSER_PATH/mapper_sma.py $HDUSER_PATH/reducer_sma.py \
+-mapper "python3 mapper_sma.py" \
+-reducer "python3 reducer_sma.py" \
+-input $HDFS_PATH/output_job2/part-00000 \
+-output $HDFS_PATH/output_job3
+
+#############################################
 # Copy output files to local file system
 #############################################
 
@@ -90,10 +105,15 @@ mkdir $HDUSER_PATH/output/job_1
 rm $HDUSER_PATH/output/job_2/*
 rmdir $HDUSER_PATH/output/job_2
 mkdir $HDUSER_PATH/output/job_2
+rm $HDUSER_PATH/output/job_3/*
+rmdir $HDUSER_PATH/output/job_3
+mkdir $HDUSER_PATH/output/job_3
 
 hdfs dfs -copyToLocal $HDFS_PATH/output_job1/* $HDUSER_PATH/output/job_1
 hdfs dfs -copyToLocal $HDFS_PATH/output_job2/* $HDUSER_PATH/output/job_2
+hdfs dfs -copyToLocal $HDFS_PATH/output_job3/* $HDUSER_PATH/output/job_3
 mv $HDUSER_PATH/output/job_2/part-00000 $HDUSER_PATH/output/job_2/part-00000.csv
+mv $HDUSER_PATH/output/job_3/part-00000 $HDUSER_PATH/output/job_3/part-00000.csv
 
 #############################################
 # Copy output files to S3
@@ -101,3 +121,5 @@ mv $HDUSER_PATH/output/job_2/part-00000 $HDUSER_PATH/output/job_2/part-00000.csv
 echo "Copying final output to S3"
 aws s3 cp $HDUSER_PATH/output/job_1 $S3_PATH/output/job_1/ --recursive
 aws s3 cp $HDUSER_PATH/output/job_2 $S3_PATH/output/job_2/ --recursive
+aws s3 cp $HDUSER_PATH/output/job_3 $S3_PATH/output/job_3/ --recursive
+
