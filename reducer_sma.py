@@ -56,11 +56,6 @@ for key_value in csv.reader(sys.stdin):
             #sma_10_error = ((sent-sma_10)/sent)*100
             del sent_list10[0]
 
-        # Get error terms in %:
-        #sma_3_error = ((sent-sma_3)/sent)*100
-        #sma_5_error = ((sent-sma_5)/sent)*100
-        #sma_10_error = ((sent-sma_10)/sent)*100
-
         try:
             print(("%s,%s,%s,%s,%s,%s,%s,%s") % (this_date_key, sent, sma_3, sma_5, sma_10, sma_3_error, sma_5_error, sma_10_error))
         except:
