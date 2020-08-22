@@ -161,8 +161,13 @@ aws s3 cp $HDUSER_PATH/output/job_2 $S3_PATH/output/job_2/ --recursive
 aws s3 cp $HDUSER_PATH/output/job_3 $S3_PATH/output/job_3/ --recursive
 aws s3 cp $HDUSER_PATH/output/job_4 $S3_PATH/output/job_4/ --recursive
 
+# copy files back again to enable push to github (changed name to csv above)
+hdfs dfs -copyToLocal $HDFS_PATH/output_job2/* $HDUSER_PATH/output/job_2
+hdfs dfs -copyToLocal $HDFS_PATH/output_job3/* $HDUSER_PATH/output/job_3
+hdfs dfs -copyToLocal $HDFS_PATH/output_job4/* $HDUSER_PATH/output/job_4
+
 #############################################
 # Get Moving Avergae Results and export to Repo:
 #############################################
 
-python3 $HDUSER_PATH/moving_avg_results.py 
+python3 $HDUSER_PATH/moving_avg_results.py
