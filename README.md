@@ -1,5 +1,3 @@
-# SSP
-
 # Reproducing this analysis:
 
 ## Set up an AWS EMR cluster:
