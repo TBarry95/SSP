@@ -29,8 +29,15 @@ df_data = data.select("*").toPandas()
 # Clean data
 ###########################################
 
+#DATE_TIME,MEAN_SENT_CATG,SMA_3,SMA_5,SMA_10,SMA_3_ERROR,SMA_5_ERROR,SMA_10_ERROR
 # columns
-df_data.columns = ['DATE_TIME', 'MEAN_SENT_CATG', 'SMA_3', 'SMA_5', 'SMA_10']
+df_data.columns = ['DATE_TIME','MEAN_SENT_CATG','SMA_3','SMA_5','SMA_10','SMA_3_ERROR','SMA_5_ERROR','SMA_10_ERROR']
+df_data = df_data[['DATE_TIME','MEAN_SENT_CATG','SMA_3','SMA_5','SMA_10']]
+print(df_data.head())
+df_data = df_data[df_data['SMA_10'].notnull()]
+df_data = df_data[df_data['SMA_10'] != 'None']
+print(df_data.head())
+
 
 df_data["MEAN_SENT_CATG"] = [float(i) for i in df_data["MEAN_SENT_CATG"]]
 df_data["SMA_3"] = [float(i) for i in df_data["SMA_3"]]
@@ -68,6 +75,8 @@ lr = LinearRegression(featuresCol = "IND_VARS",
                         maxIter=10,
                         regParam=0.3,
                         elasticNetParam=0.8)
+
+#lr = LinearRegression()
 lr_model = lr.fit(df_train)
 
 # summary
@@ -77,6 +86,9 @@ print("Intercept: " + str(lr_model.intercept))
 train_summary = lr_model.summary
 print("RMSE: %f" % train_summary.rootMeanSquaredError)
 print("r2: %f" % train_summary.r2)
+
+#df_test = assembler.transform(df_test)
+#df_test = df_test.select(['IND_VARS', 'MEAN_SENT_CATG'])
 
 lr_predictions = lr_model.transform(df_test)
 lr_predictions.select("prediction","MEAN_SENT_CATG","IND_VARS").show(5)

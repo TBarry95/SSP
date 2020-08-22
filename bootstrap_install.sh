@@ -13,7 +13,7 @@ sudo pip3 install textblob
 sudo pip3 install scipy
 sudo pip3 install sortedcontainers
 sudo pip3 install findspark
+sudo pip3 install scikit-learn
 
-git config --global user.email x19141840@student.ncirl.ie
-git config --global user.name "Tiernan Barry"
+
 

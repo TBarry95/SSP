@@ -1,6 +1,20 @@
 #!/bin/bash
 
 #############################################
+# Des: This shell script is used for full automation of the SSP project.
+#      The following jobs are ran:
+#      - Combine batch Twitter data into single file (send to S3 and HDFS)
+#      - Hadoop job 1: Clean data - map only job
+#      - Hadoop job 2: Sentiment analysis - map-reduce job
+#      - Hadoop job 3: Run SMA timeseries analysis - map-reduce job
+#      - Hadoop job 4: Run WMA timeseries analysis - map-reduce job
+#      - Run Spark 1: LR model to predict sentiment
+#      - Copy output files to S3 bucket, and to Master node instance
+#      - Get prediction results summary
+# BY: Tiernan Barry
+#############################################
+
+#############################################
 # Define working paths
 #############################################
 
@@ -16,6 +30,9 @@ chmod +x $HDUSER_PATH/mapper_clean2.py
 chmod +x $HDUSER_PATH/get_tweets/combine_tweets.py
 chmod +x $HDUSER_PATH/mapper_sentiment.py
 chmod +x $HDUSER_PATH/reducer_sentiment.py
+chmod +x $HDUSER_PATH/mapper_sma.py
+chmod +x $HDUSER_PATH/reducer_sma.py
+chmod +x $HDUSER_PATH/reducer_wma.py
 
 #############################################
 # Run python job to create raw dataset (combines files) and send to S3
@@ -47,6 +64,8 @@ hdfs dfs -rm $HDFS_PATH/output_job2/*
 hdfs dfs -rmdir $HDFS_PATH/output_job2
 hdfs dfs -rm $HDFS_PATH/output_job3/*
 hdfs dfs -rmdir $HDFS_PATH/output_job3
+hdfs dfs -rm $HDFS_PATH/output_job4/*
+hdfs dfs -rmdir $HDFS_PATH/output_job4
 
 #############################################
 # Run hadoop job 1: Clean data
@@ -81,10 +100,10 @@ hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -output $HDFS_PATH/output_job2
 
 #############################################
-# Run hadoop job 3: run moving averages analysis on TS sentiments
+# Run hadoop job 3: run Simple Moving averages analysis on TS sentiments
 #############################################
 
-echo "Launching Hadoop Job 3: Run moving averages analysis on aggregated tweet sentiment"
+echo "Launching Hadoop Job 3: Run Simple Moving Averages analysis on aggregated tweet sentiment"
 hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -D mapred.reduce.tasks=1 \
 -file $HDUSER_PATH/mapper_sma.py $HDUSER_PATH/reducer_sma.py \
@@ -92,6 +111,19 @@ hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -reducer "python3 reducer_sma.py" \
 -input $HDFS_PATH/output_job2/part-00000 \
 -output $HDFS_PATH/output_job3
+
+#############################################
+# Run hadoop job 4: Run Weighted Moving averages analysis on TS sentiments
+#############################################
+
+echo "Launching Hadoop Job 3: Run Simple Moving Averages analysis on aggregated tweet sentiment"
+hadoop jar /lib/hadoop/hadoop-streaming.jar \
+-D mapred.reduce.tasks=1 \
+-file $HDUSER_PATH/mapper_sma.py $HDUSER_PATH/reducer_wma.py \
+-mapper "python3 mapper_sma.py" \
+-reducer "python3 reducer_wma.py" \
+-input $HDFS_PATH/output_job2/part-00000 \
+-output $HDFS_PATH/output_job4
 
 #############################################
 # Copy output files to local file system
@@ -108,12 +140,17 @@ mkdir $HDUSER_PATH/output/job_2
 rm $HDUSER_PATH/output/job_3/*
 rmdir $HDUSER_PATH/output/job_3
 mkdir $HDUSER_PATH/output/job_3
+rm $HDUSER_PATH/output/job_4/*
+rmdir $HDUSER_PATH/output/job_4
+mkdir $HDUSER_PATH/output/job_4
 
 hdfs dfs -copyToLocal $HDFS_PATH/output_job1/* $HDUSER_PATH/output/job_1
 hdfs dfs -copyToLocal $HDFS_PATH/output_job2/* $HDUSER_PATH/output/job_2
 hdfs dfs -copyToLocal $HDFS_PATH/output_job3/* $HDUSER_PATH/output/job_3
+hdfs dfs -copyToLocal $HDFS_PATH/output_job4/* $HDUSER_PATH/output/job_4
 mv $HDUSER_PATH/output/job_2/part-00000 $HDUSER_PATH/output/job_2/part-00000.csv
 mv $HDUSER_PATH/output/job_3/part-00000 $HDUSER_PATH/output/job_3/part-00000.csv
+mv $HDUSER_PATH/output/job_4/part-00000 $HDUSER_PATH/output/job_4/part-00000.csv
 
 #############################################
 # Copy output files to S3
@@ -122,4 +159,10 @@ echo "Copying final output to S3"
 aws s3 cp $HDUSER_PATH/output/job_1 $S3_PATH/output/job_1/ --recursive
 aws s3 cp $HDUSER_PATH/output/job_2 $S3_PATH/output/job_2/ --recursive
 aws s3 cp $HDUSER_PATH/output/job_3 $S3_PATH/output/job_3/ --recursive
+aws s3 cp $HDUSER_PATH/output/job_4 $S3_PATH/output/job_4/ --recursive
 
+#############################################
+# Get Moving Avergae Results and export to Repo:
+#############################################
+
+python3 $HDUSER_PATH/moving_avg_results.py 
