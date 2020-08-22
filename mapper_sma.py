@@ -14,13 +14,12 @@ import csv
 import sys
 import re
 
-
 #########################################################
 # Mapper:
 #########################################################
 
 for line in csv.reader(sys.stdin):
-    if len(line) == 14:
+    if len(line) == 14: #and str(line[0]) != str("DATE_TIME"):
         date = line[0]
         sent_pol = line[2]
         sent_catg = line[3]
