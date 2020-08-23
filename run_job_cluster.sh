@@ -167,7 +167,15 @@ hdfs dfs -copyToLocal $HDFS_PATH/output_job3/* $HDUSER_PATH/output/job_3
 hdfs dfs -copyToLocal $HDFS_PATH/output_job4/* $HDUSER_PATH/output/job_4
 
 #############################################
+# Run Spark job:
+#############################################
+
+echo "Launching Spark job: Regression analysis"
+python3 $HDUSER_PATH/lr_model_spark.py
+
+#############################################
 # Get Moving Avergae Results and export to Repo:
 #############################################
 
 python3 $HDUSER_PATH/moving_avg_results.py
+
