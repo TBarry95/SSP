@@ -15,11 +15,11 @@ import pandas as pd
 
 # get TS data
 ts_data = pd.read_csv(r"./output/job_2/part-00000.csv")
-ts_data = ts_data[ts_data['DATE_TIME'].str.contains('2020-02|2020-03|2020-04|2020-05|2020-06|2020-07')]
+ts_data = ts_data[ts_data['DATE_TIME'].str.contains('2020-03|2020-04|2020-05|2020-06|2020-07')]
 
 # get results:
-results_ma = pd.read_csv(r"./moving_avg_results.csv")
-
+results_ma1 = pd.read_csv(r"./moving_avg_results_1.csv")
+results_ma5 = pd.read_csv(r"./moving_avg_results_5.csv")
 
 ###########################################
 # adjust data
@@ -31,7 +31,8 @@ ts_data['DATE_TIME'] = pd.to_datetime(ts_data['DATE_TIME'], format=format)
 ts_data = ts_data.set_index(pd.DatetimeIndex(ts_data['DATE_TIME']))
 
 # find lowest error across all:
-results_ma['TOTAL'] = results_ma['MSE']+results_ma['RMSE']+results_ma['MAE']
+results_ma1['TOTAL'] = results_ma1['MSE']+results_ma1['RMSE']+results_ma1['MAE']
+results_ma5['TOTAL'] = results_ma5['MSE']+results_ma5['RMSE']+results_ma5['MAE']
 
 ###########################################
 # Plot:
@@ -39,8 +40,12 @@ results_ma['TOTAL'] = results_ma['MSE']+results_ma['RMSE']+results_ma['MAE']
 
 # plot TS of polarity:
 # remove cols: MEAN_SENT_POLARITY,MEAN_SENT_CATG
-ts_data = ts_data[['MEAN_SENT_POLARITY']]
-plot = ts_data.plot(kind='line', title="Timeseries of Twitter Sentiment Polarity")
+ts_data1 = ts_data[['MEAN_SENT_POLARITY']]
+plot = ts_data1.plot(kind='line', title="Timeseries of Twitter Sentiment Polarity")
 plot.set_ylabel("SENTIMENT_POLARITY")
 
-# plot TS of polarity:
+# plot distribution of tweets over time:
+ts_data2 = ts_data[['TWEETS_PER_HOUR']]
+plot2 = ts_data2.plot(kind='line', title="Distribution of Tweets per Hour")
+plot2.set_ylabel("TWEETS_PER_HOUR")
+

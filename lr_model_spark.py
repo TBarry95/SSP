@@ -15,6 +15,7 @@ from pyspark.ml.feature import MinMaxScaler
 from pyspark.sql import SparkSession
 import re
 from pyspark.ml.evaluation import RegressionEvaluator
+import pandas as pd
 
 ###########################################
 # Get data
@@ -40,22 +41,17 @@ df_covid_count["FAVS_PER_TWEET"] = [float(i) for i in df_covid_count["FAVS_PER_T
 df_covid_count["RT_PER_TWEET"] = [float(i) for i in df_covid_count["RT_PER_TWEET"]]
 df_covid_count["TWEETS_PER_HOUR"] = [int(i) for i in df_covid_count["TWEETS_PER_HOUR"]]
 df_covid_count["COVID_COUNT"] = [int(i) for i in df_covid_count["COVID_COUNT"]]
-print(df_covid_count.head())
+#print(df_covid_count.head())
 
 # remove before Feb 2020
 filter_date = '2020-02|2020-03|2020-04|2020-05|2020-06|2020-07|2020-08|2020-09'
 df_covid_count = df_covid_count[df_covid_count['DATE_TIME'].str.contains(filter_date)]
 print("Number of rows after removing before 2020:", len(df_covid_count))
 
-# ensure enough tweets per hour:
-df_covid_count = df_covid_count[df_covid_count['TWEETS_PER_HOUR'] > 10]
-print("Number of rows with > 10 tweets an hour:", len(df_covid_count))
-print(df_covid_count.head())
-
-# save date for later
-date = df_covid_count["DATE_TIME"]
-del df_covid_count["DATE_TIME"]
-print(df_covid_count.head())
+# apply date as index:
+format = '%Y-%m-%d %H'
+df_covid_count['DATE_TIME'] = pd.to_datetime(df_covid_count['DATE_TIME'], format=format)
+df_covid_count = df_covid_count.set_index(pd.DatetimeIndex(df_covid_count['DATE_TIME']))
 
 ###########################################
 # Correlation matrix:
@@ -64,7 +60,10 @@ print(df_covid_count.head())
 df_covid_count = df_covid_count[["MEAN_SENT_CATG", "MEAN_SENT_POLARITY", "COVID_COUNT", 
 			"FAVS_PER_TWEET", "RT_PER_TWEET", "TWEETS_PER_HOUR"]]
 
-print("Correlation matrix:")
+print("###########################################")
+print("# Correlation matrix:")
+print("###########################################")
+
 print(df_covid_count.corr())
 
 ###########################################
@@ -77,7 +76,7 @@ df_clean_assmbl  = assembler.transform(df_clean)
 scaler = MinMaxScaler(inputCol="IND_VARS", outputCol="SCALED_IND_VARS")
 scaler_model =  scaler.fit(df_clean_assmbl.select("IND_VARS"))
 scaled_data = scaler_model.transform(df_clean_assmbl)
-scaled_data.show(3)
+#scaled_data.show(3)
 
 # split data
 splits = scaled_data.randomSplit([0.7, 0.3],1)
@@ -93,7 +92,10 @@ lr = LinearRegression(featuresCol = "SCALED_IND_VARS",
 lr_model = lr.fit(df_train)
 
 # summary
-#print("Predictors: ", "COVID_COUNT")
+print("###########################################")
+print("# Linear regression Results:")
+print("###########################################")
+
 print("Predictors: ", "COVID_COUNT",  "FAVS_PER_TWEET", "RT_PER_TWEET", "TWEETS_PER_HOUR")
 print("Coefficients: " + str(lr_model.coefficients))
 print("Intercept: " + str(lr_model.intercept))
@@ -110,7 +112,6 @@ print("R Squared (R2) on test data = %g" % lr_evaluator.evaluate(lr_predictions)
 # test
 test_result = lr_model.evaluate(df_test)
 print("Root Mean Squared Error (RMSE) on test data = %g" % test_result.rootMeanSquaredError)
-
 predictions = lr_model.transform(df_test)
 predictions.select("prediction","MEAN_SENT_CATG","SCALED_IND_VARS").show()
 
