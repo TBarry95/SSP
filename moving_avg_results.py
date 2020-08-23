@@ -72,74 +72,100 @@ df_wma["WMA_10_ERROR"] = [float(i)*100 for i in df_wma["WMA_10_ERROR"]]
 # remove before Feb 2020
 df_sma_jul = df_sma[df_sma['DATE_TIME'].str.contains('2020-07')]
 df_wma_jul = df_wma[df_wma['DATE_TIME'].str.contains('2020-07')]
-#print(df_sma_jul)
+print(df_sma_jul)
+#print(df_wma_jul)
+
+###########################################
+# Get last 5 months:
+###########################################
+
+# 5months:
+months = '2020-03|2020-04|2020-05|2020-06|2020-07'
+df_sma_5m = df_sma[df_sma['DATE_TIME'].str.contains(months)]
+df_wma_5m = df_wma[df_wma['DATE_TIME'].str.contains(months)]
+print(df_sma_5m)
 #print(df_wma_jul)
 
 ###########################################
 # Get accuracy statistics:
 ###########################################
 
-################################
-# MSE:
-################################
+# function to do multiple times:
+def get_results(df_sma_jul, df_wma_jul):
 
-# SMA
-mse_sma3 = mean_squared_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_3'])
-print("MSE 3-hour SMA: ", mse_sma3)
-mse_sma5 = mean_squared_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_5'])
-print("MSE 5-hour SMA: ", mse_sma5)
-mse_sma10 = mean_squared_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_10'])
-print("MSE 10-hour SMA: ", mse_sma10)
+    ################################
+    # MSE:
+    ################################
+    # SMA
+    mse_sma3 = mean_squared_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_3'])
+    print("MSE 3-hour SMA: ", mse_sma3)
+    mse_sma5 = mean_squared_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_5'])
+    print("MSE 5-hour SMA: ", mse_sma5)
+    mse_sma10 = mean_squared_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_10'])
+    print("MSE 10-hour SMA: ", mse_sma10)
 
-# WMA:
-mse_wma3 = mean_squared_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_3'])
-print("MSE 3-hour WMA: ", mse_wma3)
-mse_wma5 = mean_squared_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_5'])
-print("MSE 5-hour WMA: ", mse_wma5)
-mse_wma10 = mean_squared_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_10'])
-print("MSE 10-hour WMA: ", mse_wma10)
+    # WMA:
+    mse_wma3 = mean_squared_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_3'])
+    print("MSE 3-hour WMA: ", mse_wma3)
+    mse_wma5 = mean_squared_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_5'])
+    print("MSE 5-hour WMA: ", mse_wma5)
+    mse_wma10 = mean_squared_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_10'])
+    print("MSE 10-hour WMA: ", mse_wma10)
 
-################################
-# RMSE:
-################################
+    ################################
+    # RMSE:
+    ################################
 
-print("RMSE 3-hour SMA: ", math.sqrt(mse_sma3))
-print("RMSE 5-hour SMA: ", math.sqrt(mse_sma5))
-print("RMSE 10-hour SMA: ", math.sqrt(mse_sma10))
+    print("RMSE 3-hour SMA: ", math.sqrt(mse_sma3))
+    print("RMSE 5-hour SMA: ", math.sqrt(mse_sma5))
+    print("RMSE 10-hour SMA: ", math.sqrt(mse_sma10))
+    print("RMSE 3-hour WMA: ", math.sqrt(mse_wma3))
+    print("RMSE 5-hour WMA: ", math.sqrt(mse_wma5))
+    print("RMSE 10-hour WMA: ", math.sqrt(mse_wma10))
 
-print("RMSE 3-hour WMA: ", math.sqrt(mse_wma3))
-print("RMSE 5-hour WMA: ", math.sqrt(mse_wma5))
-print("RMSE 10-hour WMA: ", math.sqrt(mse_wma10))
+    ################################
+    # MAE:
+    ################################
 
-################################
-# MAE:
-################################
+    # SMA:
+    mae_sma3 = mean_absolute_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_3'])
+    print("MAE 3-hour SMA: ", mae_sma3)
+    mae_sma5 = mean_absolute_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_5'])
+    print("MAE 5-hour SMA: ", mae_sma5)
+    mae_sma10 = mean_absolute_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_10'])
+    print("MAE 10-hour SMA: ", mae_sma10)
 
-# SMA:
-mae_sma3 = mean_absolute_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_3'])
-print("MAE 3-hour SMA: ", mae_sma3)
-mae_sma5 = mean_absolute_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_5'])
-print("MAE 5-hour SMA: ", mae_sma5)
-mae_sma10 = mean_absolute_error(df_sma_jul['MEAN_SENT_CATG'], df_sma_jul['SMA_10'])
-print("MAE 10-hour SMA: ", mae_sma10)
+    # WMA:
+    mae_wma3 = mean_absolute_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_3'])
+    print("MAE 3-hour WMA: ", mae_wma3)
+    mae_wma5 = mean_absolute_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_5'])
+    print("MAE 5-hour WMA: ", mae_wma5)
+    mae_wma10 = mean_absolute_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_10'])
+    print("MAE 10-hour WMA: ", mae_wma10)
 
-# WMA:
-mae_wma3 = mean_absolute_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_3'])
-print("MAE 3-hour WMA: ", mae_wma3)
-mae_wma5 = mean_absolute_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_5'])
-print("MAE 5-hour WMA: ", mae_wma5)
-mae_wma10 = mean_absolute_error(df_wma_jul['MEAN_SENT_CATG'], df_wma_jul['WMA_10'])
-print("MAE 10-hour WMA: ", mae_wma10)
+    ###########################################
+    # Table of statistics:
+    ###########################################
 
-###########################################
-# Table of statistics:
-###########################################
+    df_results = pd.DataFrame()
+    df_results['MODEL'] = ["SMA_3", "SMA_5","SMA_10","WMA_3","WMA_5","WMA_10"]
+    df_results['MSE'] = [mse_sma3, mse_sma5, mse_sma10, mse_wma3, mse_wma5, mse_wma10]
+    df_results['RMSE'] = [math.sqrt(mse_sma3), math.sqrt(mse_sma5),math.sqrt(mse_sma10), math.sqrt(mse_wma3), math.sqrt(mse_wma5), math.sqrt(mse_wma10)]
+    df_results['MAE'] = [mae_sma3, mae_sma5, mae_sma10, mae_wma3, mae_wma5, mae_wma10]
+    print(df_results)
+    return df_results
 
-df_results = pd.DataFrame()
-df_results['MODEL'] = ["SMA_3", "SMA_5","SMA_10","WMA_3","WMA_5","WMA_10"]
-df_results['MSE'] = [mse_sma3, mse_sma5, mse_sma10, mse_wma3, mse_wma5, mse_wma10]
-df_results['RMSE'] = [math.sqrt(mse_sma3), math.sqrt(mse_sma5),math.sqrt(mse_sma10), math.sqrt(mse_wma3), math.sqrt(mse_wma5), math.sqrt(mse_wma10)]
-df_results['MAE'] = [mae_sma3, mae_sma5, mae_sma10, mae_wma3, mae_wma5, mae_wma10]
-print(df_results)
+print("#####################################")
+print("# July results (1 month)")
+print("#####################################")
 
-df_results.to_csv(r"/home/hadoop/SSP/moving_avg_results.csv", index=False)
+df_results_1 = get_results(df_sma_jul, df_wma_jul)
+df_results_1.to_csv(r"/home/hadoop/SSP/moving_avg_results_1.csv", index=False)
+
+print("#####################################")
+print("# March-July results (5 months)")
+print("#####################################")
+
+df_results_5 = get_results(df_sma_5m, df_wma_5m)
+df_results_5.to_csv(r"/home/hadoop/SSP/moving_avg_results_5.csv", index=False)
+
