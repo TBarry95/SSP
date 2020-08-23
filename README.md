@@ -3,8 +3,8 @@
 # Reproducing this analysis:
 
 ## Set up an AWS EMR cluster:
-- Set up EMR cluster as outlined by the Procedure document provided in Moodle. 
-- The required bootstrap shell file is provided in the Moodle submission. Make sure to include this file as outlined in the Pocedure document for setting up the EMR cluster. 
+- Set up EMR cluster as outlined by the Procedure Document provided in Moodle (supporting material).
+- for setting up the EMR cluster, you will need to use the bootstrap shell file provided in the Moodle submission. Make sure to include this file as outlined in the Pocedure document for setting up the EMR cluster. 
 
 ## Deploying this Project:
 
@@ -19,7 +19,7 @@
   - Note: Git has already been installed during the bootstrap configuration. 
 
 ### Ensure S3 Paths are Correct:
-- As per the Procedure document, ensure that the S3 path loations have been adjusted according to your chosen path names in the following files:
+- As per the Procedure Document provided, ensure that the S3 path loations have been adjusted according to your chosen path names in the following files:
   - SSP/run_job_cluster.sh
   - SSP/moving_avg_results.py
 
