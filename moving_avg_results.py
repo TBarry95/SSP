@@ -72,7 +72,7 @@ df_wma["WMA_10_ERROR"] = [float(i)*100 for i in df_wma["WMA_10_ERROR"]]
 # remove before Feb 2020
 df_sma_jul = df_sma[df_sma['DATE_TIME'].str.contains('2020-07')]
 df_wma_jul = df_wma[df_wma['DATE_TIME'].str.contains('2020-07')]
-print(df_sma_jul)
+#print(df_sma_jul)
 #print(df_wma_jul)
 
 ###########################################
@@ -83,7 +83,7 @@ print(df_sma_jul)
 months = '2020-03|2020-04|2020-05|2020-06|2020-07'
 df_sma_5m = df_sma[df_sma['DATE_TIME'].str.contains(months)]
 df_wma_5m = df_wma[df_wma['DATE_TIME'].str.contains(months)]
-print(df_sma_5m)
+#print(df_sma_5m)
 #print(df_wma_jul)
 
 ###########################################
