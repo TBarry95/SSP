@@ -4,12 +4,26 @@
 
 ## Set up an AWS EMR cluster:
 - Set up EMR cluster as outlined by the Procedure document provided in Moodle. 
-- The required bootstrap shell file is provided in the Moodle submission. Make sure to include this file as outline in the Pocedure document for setting up the EMR cluster. 
+- The required bootstrap shell file is provided in the Moodle submission. Make sure to include this file as outlined in the Pocedure document for setting up the EMR cluster. 
 
-## Deploying the Project:
-- As per the Procedure document, ensure that the S3 path lcoations have been adjusted according to your chosen path names in the following files:
-  - run_job_cluster.sh
-  - moving_avg_results.py
+## Deploying this Project:
+
+### SSH into Master Node:
+- Copy the address for the Master node from EMR dashboard (Master public DNS)
+- Use SSH command to connect to master node as per below example:
+  - ssh -i ./keys/tbarry_emr.pem hadoop@ec2-52-91-238-63.compute-1.amazonaws.com
+
+### Clone Github repository:
+- When in master node, clone GitHub repo by running the below command:
+  - git clone https://github.com/TBarry95/SSP 
+  - Note: Git has already been installed during the bootstrap configuration. 
+
+### Ensure S3 Paths are Correct:
+- As per the Procedure document, ensure that the S3 path loations have been adjusted according to your chosen path names in the following files:
+  - SSP/run_job_cluster.sh
+  - SSP/moving_avg_results.py
+
+### From ~SSP folder, run the Shell Script: run_job_cluster.sh:
+- ./run_job_cluster.sh 
 
 
-- 
