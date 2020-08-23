@@ -2,9 +2,10 @@
 
 # Reproducing this analysis:
 
-## Set up an AWS EMR cluster:
+## Set up an AWS EMR (6.00) cluster:
 - Set up EMR cluster as outlined by the Procedure Document provided in Moodle (supporting material).
-- for setting up the EMR cluster, you will need to use the bootstrap shell file provided in the Moodle submission. Make sure to include this file as outlined in the Pocedure document for setting up the EMR cluster. 
+  - Installed with HAdoop 3.2.1 and Spark 2.4.4.
+- For setting up the EMR cluster, you will need to use the bootstrap shell file provided in the Moodle submission. Make sure to include this file as outlined in the Pocedure document for setting up the EMR cluster. 
 
 ## Deploying this Project:
 
