@@ -12,6 +12,7 @@
 - Copy the address for the Master node from EMR dashboard (Master public DNS)
 - Use SSH command to connect to master node as per below example:
   - ssh -i ./keys/tbarry_emr.pem hadoop@ec2-52-91-238-63.compute-1.amazonaws.com
+- If SSH is not responding, please refer to the Procedure Document provided to enable SSH through AWS. 
 
 ### Clone Github repository:
 - When in master node, clone GitHub repo by running the below command:
