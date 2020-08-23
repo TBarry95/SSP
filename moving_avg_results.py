@@ -142,4 +142,4 @@ df_results['RMSE'] = [math.sqrt(mse_sma3), math.sqrt(mse_sma5),math.sqrt(mse_sma
 df_results['MAE'] = [mae_sma3, mae_sma5, mae_sma10, mae_wma3, mae_wma5, mae_wma10]
 print(df_results)
 
-df_results.to_csv(r"/home/hadoop/SSP/moving_avg_results.csv", index=True)
+df_results.to_csv(r"/home/hadoop/SSP/moving_avg_results.csv", index=False)
