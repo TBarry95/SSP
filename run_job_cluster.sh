@@ -116,7 +116,7 @@ hadoop jar /lib/hadoop/hadoop-streaming.jar \
 # Run hadoop job 4: Run Weighted Moving averages analysis on TS sentiments
 #############################################
 
-echo "Launching Hadoop Job 3: Run Simple Moving Averages analysis on aggregated tweet sentiment"
+echo "Launching Hadoop Job 4: Run Weighted Moving Averages analysis on aggregated tweet sentiment"
 hadoop jar /lib/hadoop/hadoop-streaming.jar \
 -D mapred.reduce.tasks=1 \
 -file $HDUSER_PATH/mapper_sma.py $HDUSER_PATH/reducer_wma.py \
